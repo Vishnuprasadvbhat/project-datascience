@@ -2,7 +2,7 @@ import sys
 import os
 import logging
 from dataclasses import dataclass
-from data_ingestion import DataIngestion
+# from data_ingestion import DataIngestion
 import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer 
@@ -10,16 +10,18 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from src.exception import CustomException
-data_ingestion = DataIngestion()
+from src.utils import save_object
 
-data_ingestion.ingestion_config.train_data_path
+# data_ingestion = DataIngestion()
+
+# data_ingestion.ingestion_config.train_data_path
 
 @dataclass
 class DatatransformationConfig: 
   preprocessor_obj_file_path = os.path.join('artifacts', 'preprocessor.pkl')
 
 
-class Datatranformation:
+class Datatransformation:
   def __init__(self):
     self.data_transformation_config = DatatransformationConfig()
 
@@ -39,16 +41,16 @@ class Datatranformation:
       ]
       num_pipeline = Pipeline(
         steps=[
-          "imputer", SimpleImputer(),
-          "scaler", StandardScaler(),   
+          ("imputer", SimpleImputer(strategy="median")),
+          ("scaler", StandardScaler(with_mean=False))
           # "one_hot", OneHotEncoder(),
           ])
 
       cat_pipeline = Pipeline(
         steps = [
-          ("imputer", SimpleImputer(strategy = 'most_frequent')),
+          ("imputer", SimpleImputer(strategy="most_frequent")),
           ("one_hot_encoder", OneHotEncoder()),
-          ("scaler", StandardScaler())
+          ("scaler", StandardScaler(with_mean=False))
           ])    
       logging.info(f'Numerical columns {numerical_cols}')
 
@@ -68,8 +70,8 @@ class Datatranformation:
 
   def initiate_data_transformation(self, train_path, test_path):
     try:
-      train_df = pd.read_csv('artifacts\train.csv')
-      test_df = pd.read_csv('artifacts\test.csv')
+      train_df = pd.read_csv("artifacts\\train.csv")
+      test_df = pd.read_csv('artifacts\\test.csv')
 
       logging.info('read training and testing data')
 
@@ -104,16 +106,16 @@ class Datatranformation:
       logging.info(f'Saved preprocessing object')
 
       save_object(
-
         file_path = self.data_transformation_config.preprocessor_obj_file_path,
-        obj = preprocessing_obj
+        object = preprocessing_obj
       )
+
       return (
         train_arr,
         test_arr,
         self.data_transformation_config.preprocessor_obj_file_path,
       )
-    except:
-      pass
+    except Exception as e:
+      raise CustomException(e,sys)
 
 
