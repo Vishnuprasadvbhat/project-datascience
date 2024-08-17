@@ -27,7 +27,7 @@ def get_requirements(file_path: str)-> List[str]:
 setup(
   name= 'project_datascience',
   version = '0.0.1',
-  author='Vihnuprasad',
+  author='Vishnuprasad',
   author_email= 'vishnuprasadvbhat@gmail.com',
   packages= find_packages(),
   install_requires= get_requirements('requirements.txt')
