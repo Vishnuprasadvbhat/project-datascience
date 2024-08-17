@@ -1,6 +1,6 @@
 pandas 
 seaborn 
-numpy
+numpy==1.26.3
 matplotlib
 scikit-learn
 catboost
