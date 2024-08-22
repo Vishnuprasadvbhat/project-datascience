@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import dill
 from sklearn.metrics import r2_score
+from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 
 
 def save_object(file_path,object):
@@ -28,9 +29,18 @@ def eval_models(x_train,y_train,x_test,y_test,models):
 
     for i in range(len(list(models))):
       model = list(models.values())[i]
+      # param = list(params.values())[i]
 
-      model.fit(x_train,y_train) #training the model
+      # Due to Hyperparametering issue Could add parameters
 
+      # gridSearch = GridSearchCV(model,param_grid=params,cv=3,)
+      # gridSearch.fit(x_train,y_train) #training the grid search instance
+
+      # model.set_params(**gridSearch.best_params_)
+
+      model.fit(x_train,y_train) # training the model with best params
+
+      
       y_train_pred = model.predict(x_train)
 
       y_test_pred = model.predict(x_test)  
